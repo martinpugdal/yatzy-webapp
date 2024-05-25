@@ -25,6 +25,7 @@ router.get("/", (req, res) => {
         res.status(404).send({ message: "Player not found" });
         return;
     }
+    const dice = player.getYatzyDice();
     if (dice === undefined || dice === null) {
         res.status(404).send({ message: "Dice not found" });
         return;

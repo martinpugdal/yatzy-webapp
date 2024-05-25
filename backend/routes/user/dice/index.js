@@ -2,7 +2,6 @@ import express from "express";
 const router = express.Router();
 import { rooms, roomCollection, playerCollection } from "../../../index.js";
 import { getDocs, query, where, updateDoc } from "firebase/firestore";
-import { YatzyDice } from "../../../YatzyDice.js";
 
 router.get("/", (req, res) => {
     const sessionID = req.query?.sessionID;
@@ -89,9 +88,10 @@ router.post("/:action", (req, res) => {
         );
         getDocs(playerQuery).then((querySnapshot) => {
             querySnapshot.docs.forEach((doc) => {
-                updateDoc(doc.ref, {
-                    yatzyDice: dice.toMap(),
-                });
+                const obj = {};
+                obj.yatzyDice = dice.toMap();
+                obj.yatzyDice.roomID = room.getId();
+                updateDoc(doc.ref, obj);
             });
         });
         res.send({
@@ -165,7 +165,7 @@ router.post("/:action", (req, res) => {
                                 .getOldYatzyDice()
                                 .map((yatzyDice) => {
                                     const obj = yatzyDice.toMap();
-                                    obj.roomID = room.getId();
+                                    obj.roomID = yatzyDice.getRoomID();
                                     return obj;
                                 });
                             querySnapshot.docs.forEach((doc) => {
@@ -186,8 +186,10 @@ router.post("/:action", (req, res) => {
             );
             getDocs(playerQuery).then((querySnapshot) => {
                 querySnapshot.docs.forEach((doc) => {
+                    const obj = dice.toMap();
+                    obj.roomID = room.getId();
                     updateDoc(doc.ref, {
-                        yatzyDice: dice.toMap(),
+                        yatzyDice: obj,
                     });
                 });
             });

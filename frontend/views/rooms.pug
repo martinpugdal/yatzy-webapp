@@ -11,6 +11,12 @@ html(lang="en")
                 margin: 0;
                 background-color: #f0f0f0;
             }
+            .logout-button {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+            }
             .login-container {
                 background: white;
                 padding: 20px;
@@ -224,6 +230,8 @@ html(lang="en")
             }
 
     body
+        div.logout-button
+            button.btn-primary(onclick="logout(event)") Log ud
         div.login-container
         div.user-info
 
@@ -266,6 +274,7 @@ html(lang="en")
                 document.querySelector(".user-info").innerHTML = "<h2>Velkommen til Yatzy spillet</h2>";
                 document.querySelector(".user-info").innerHTML += "<p>Her kan du spille Yatzy med dine venner.</p>";
                 document.querySelector(".container").appendChild(document.createElement("button")).outerHTML = `<button class="btn-primary" style="margin-top: 20px;" onclick="createRoom(event)">Opret rum</button>`;
+                document.querySelector(".logout-button").style.display = "block";
             } else {
                 document.querySelector(".user-info").innerHTML = "";
                 document.querySelector(".user-info").style.display = "none";
@@ -276,6 +285,7 @@ html(lang="en")
                     <button class="btn-primary" id="authButton" onclick="login(event)">Log ind</button>
                     <button class="toggle-button" onclick="toggleAuth()">Eller opret en ny bruger</button>
                 `;
+                document.querySelector(".logout-button").style.display = "none";
             }
             get("!{apiURL}" + "/user", sessionID === null ? "" : sessionID).then(
                 (values) => {
@@ -306,6 +316,19 @@ html(lang="en")
                     location.reload();
                 } else {
                     alert(values.message);
+                }
+            }
+
+            async function logout(event) {
+                console.log("Logging out");
+                event.preventDefault();
+                const sID = sessionStorage.getItem("sessionID");
+                const res = await post("!{apiURL}" + "/logout", {}, sID);
+                if (res.success === true) {
+                    sessionStorage.removeItem("sessionID");
+                    location.reload();
+                } else {
+                    alert(res.message);
                 }
             }
 

@@ -86,7 +86,7 @@ export class Player {
     }
 
     static fromMap(map) {
-        const player = new Player(map.name, -1);
+        const player = new Player(map.name, null);
         player.password = map.password || Player.hashPassword("-1");
         if (map.yatzyDice) player.yatzyDice = YatzyDice.fromMap(map.yatzyDice);
         if (map.oldYatzyDice)
@@ -98,22 +98,11 @@ export class Player {
         return player;
     }
 
-    toMap(roomID = null) {
-        if (roomID === null) {
-            return {
-                name: this.name,
-                finished: this.isFinished(),
-                score: this.getScore(),
-            };
-        } else {
-            const yatzyDiceFromRoom = this.oldYatzyDice.find(
-                (yatzyDice) => yatzyDice.roomID === roomID
-            );
-            return {
-                name: this.name,
-                finished: yatzyDiceFromRoom?.isFinished() || false,
-                score: yatzyDiceFromRoom?.getTotal() || 0,
-            };
-        }
+    toMap() {
+        return {
+            name: this.name,
+            finished: this.isFinished(),
+            score: this.getScore(),
+        };
     }
 }

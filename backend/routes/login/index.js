@@ -44,6 +44,10 @@ router.post("/", (req, res) => {
         res.status(403).json({ message: "Wrong password" });
         return;
     }
+    if (player.getSession() !== null) {
+        res.status(403).json({ message: "Already logged in" });
+        return;
+    }
 
     // create new player
     const generatedID = randomBytes(20).toString("hex");

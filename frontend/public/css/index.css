@@ -1,0 +1,116 @@
+/* html and body css, its to center it in the middle of the page */
+body {
+    display: table-cell;
+    vertical-align: middle;
+    background: wheat;
+}
+html {
+    display: table;
+    margin: auto;
+    height: 100%;
+}
+
+@counter-style rocket {
+    system: cyclic;
+    symbols: 🚀;
+    suffix: " ";
+}
+
+.scores {
+    display: grid;
+    margin-top: 20px;
+}
+
+table {
+    display: grid;
+    grid-template-columns: auto;
+    grid-row: auto;
+    border: 1px solid green;
+    padding: 12px;
+    text-align: center;
+    border-spacing: 5px;
+}
+
+td {
+    padding: 5px;
+    text-align: left;
+    font-size: 16px;
+    height: 16px;
+}
+
+#dice-area {
+    border: 1px solid green;
+}
+
+#game-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 5%;
+}
+
+.score-info {
+    width: 170px;
+}
+
+.score-field {
+    border: 1px solid black;
+    width: 40px;
+    cursor: pointer;
+    background: white;
+    text-align: center;
+}
+
+#dices {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    img {
+        width: 52px;
+        height: 52px;
+        margin: 5px;
+        cursor: pointer;
+    }
+}
+
+.locked {
+    -webkit-filter: hue-rotate(180deg);
+    filter: hue-rotate(180deg);
+    background-color: #f2f2f2;
+}
+
+@keyframes roll {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(10deg);
+    }
+    50% {
+        transform: rotate(-10deg);
+    }
+    75% {
+        transform: rotate(10deg);
+    }
+    100% {
+        transform: rotate(-10deg);
+    }
+}
+
+#roll {
+    font-size: 20px;
+    cursor: pointer;
+    width: 120px;
+    height: 65px;
+}

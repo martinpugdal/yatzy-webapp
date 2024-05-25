@@ -1,0 +1,213 @@
+doctype html
+html(lang="en")
+  head
+    title Yatzy - Rum #{id}
+    meta(charset="UTF-8")
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+      .container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 600px;
+        margin-top: 20px;
+        text-align: center;
+        box-sizing: border-box;
+      }
+      h1, h2 {
+        color: #333;
+      }
+      p {
+        color: #666;
+      }
+      .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        padding: 10px 20px;
+        margin: 10px 0;
+      }
+      .btn-primary:hover {
+        background-color: #0056b3;
+      }
+      .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 10px; /* Add spacing between buttons */
+        margin: 10px 0;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 10px 0;
+        text-align: left;
+      }
+      li {
+        background: #f9f9f9;
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .player-name {
+        font-weight: bold;
+        color: #333;
+      }
+      .player-score {
+        background: #e0e0e0;
+        padding: 5px 10px;
+        border-radius: 4px;
+        color: #333;
+      }
+      .finished {
+        background-color: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+      }
+      .finished .player-score {
+        background-color: #c3e6cb;
+      }
+      .finished-icon {
+        font-size: 18px;
+        color: #28a745;
+        margin-left: 10px;
+      }
+  body
+    div.container
+      h1 Velkommen til Yatzy spillet
+      p Her kan du spille Yatzy med dine venner.
+
+      div.button-group-room
+
+      h2 Spillere i rum #{id} - (#{players.length}/#{maxPlayers}) : #{status}
+      if status == "WAITING"
+        ul
+          each player in players
+            li
+              span.player-name= player.name
+      else
+        - const list = players;
+        - list.sort((a, b) => b.score - a.score);
+        ul
+          each player in list
+            li(class=player.finished ? "finished" : "")
+              span.player-name= player.name
+              span.player-score= player.score
+              if player.finished
+                span.finished-icon ✨
+
+      div.playerNeeded
+        if players.length == 0
+          p Der er ingen spillere i rummet
+        else if players.length < 2 && status == "WAITING"
+          p Der mangler #{maxPlayers - players.length} spiller(e) for at starte spillet
+        else if players.length >= 2 && status == "WAITING"
+          p Spillet kan startes
+        else if status == "STARTED"
+          p Spillet er startet
+        else if status == "FINISHED"
+          p Spillet er færdiggjort
+        else
+          p Spillet er i gang
+
+      .button-group
+        button.btn-primary(id="join-room-button", style="display: none;", onclick="joinRoomHandler(event)") Tilmeld rum
+        button.btn-primary(id="leave-room-button", style="display: none;", onclick="leaveRoomHandler(event)") Forlad rum
+        button.btn-primary(id="start-game-button", style="display: none;", onclick="startGameHandler(event)") Start spil
+
+      button.btn-primary(style="margin-top: 20px;", onclick="window.location.href='/rooms'") Tilbage til rum oversigt
+
+    script.
+      !{post}
+      !{get}
+
+      async function joinRoomHandler(event) {
+        event.preventDefault();
+        const roomID = "#{id}";
+        const sessionID = sessionStorage.getItem("sessionID");
+        const res = await post("!{apiURL}" + "/rooms/" + roomID + "/joinRoom", {}, sessionID);
+        if (res.success === true) {
+          location.reload();
+        } else {
+          alert(res.message);
+        }
+      }
+
+      async function leaveRoomHandler(event) {
+        event.preventDefault();
+        const roomID = "#{id}";
+        const sessionID = sessionStorage.getItem("sessionID");
+        const res = await post("!{apiURL}" + "/rooms/" + roomID + "/leaveRoom", {}, sessionID);
+        if (res.success === true) {
+          location.reload();
+        } else {
+          alert(res.message);
+        }
+      }
+
+      async function startGameHandler(event) {
+        event.preventDefault();
+        const roomID = "#{id}";
+        const sessionID = sessionStorage.getItem("sessionID");
+        const res = await post("!{apiURL}" + "/rooms/" + roomID + "/start", {}, sessionID);
+        if (res.success === true) {
+          const newLocation = location.href + "/game";
+          window.location.href = newLocation + "?sessionID=" + sessionID;
+        } else {
+          alert(res.message);
+        }
+      }
+
+      async function checkPlayerInRoom(roomID, sessionID) {
+        const res = await get("!{apiURL}" + "/user", sessionID);
+        return res.room?.id === roomID;
+      }
+
+      function goBackToGame(roomID, sessionID) {
+        const newLocation = location.href + "/game";
+        location.href = newLocation + "?sessionID=" + sessionID;
+      }
+
+      const sessionID = sessionStorage.getItem("sessionID");
+      const joinButton = document.getElementById("join-room-button");
+      const leaveButton = document.getElementById("leave-room-button");
+      const startButton = document.getElementById("start-game-button");
+
+      if (sessionID) {
+        checkPlayerInRoom("#{id}", sessionID).then((inRoom) => {
+          if (inRoom && "#{status}" === "WAITING" && #{players.length} <= #{maxPlayers}) {
+            joinButton.style.display = "none";
+            leaveButton.style.display = "block";
+            if (#{players.length} > 1) {
+              startButton.style.display = "block";
+            }
+          } else if (!inRoom && "#{status}" === "WAITING" && #{players.length} < #{maxPlayers}) {
+            joinButton.style.display = "block";
+            leaveButton.style.display = "none";
+            startButton.style.display = "none";
+          } else if ("#{status}" == "STARTED" && inRoom) {
+              const playerNeededDiv = document.querySelector(".playerNeeded");
+              const button = document.createElement("button");
+              button.classList.add("btn-primary");
+              button.style.marginTop = "-20px";
+              button.style.backgroundColor = "#28a745";
+              button.onclick = () => goBackToGame("#{id}", sessionID);
+              button.textContent = "Tilbage til spillet";
+              playerNeededDiv.appendChild(button);
+          }
+        });
+      }

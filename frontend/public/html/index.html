@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="da">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Yatzy</title>
+		<link rel="stylesheet" href="/static/css/index.css" />
+	</head>
+	<body>
+		<div
+			class="container"
+			style="display: grid; grid-template-columns: 20% 80%; gap: 20px; align-items: center;"
+		>
+			<!-- left side -->
+			<!-- place it at top of -->
+			<div id="info" style="margin-top: -380%; margin-left: -60%;">
+				<h2>Information</h2>
+				<p>
+					<strong>Player Name:</strong>
+					<span id="player-name"></span>
+				</p>
+				<p><strong>Room ID:</strong> <span id="room-id"></span></p>
+				<p>
+					<strong>Players in Room:</strong>
+					<ul id="players" style="list-style-type: rocket; margin-top: -8%;"></ul>
+				</p>
+
+				<button id="leave-room">Gå ud af rummet</button>
+			</div>
+			<!-- mid side -->
+			<div id="game-board">
+				<div id="dice-area">
+					<div id="dices">
+						<img class="dice-img" alt="dice-1" />
+						<img class="dice-img" alt="dice-2" />
+						<img class="dice-img" alt="dice-3" />
+						<img class="dice-img" alt="dice-4" />
+						<img class="dice-img" alt="dice-5" />
+					</div>
+					<div id="game-actions">
+						<p id="rolls-left"></p>
+						<button id="roll">Roll!</button>
+					</div>
+				</div>
+				<table class="scores">
+					<tbody>
+						<tr>
+							<td id="one-s" class="score-info">1-s</td>
+							<td id="one-s" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="two-s" class="score-info">2-s</td>
+							<td id="two-s" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="three-s" class="score-info">3-s</td>
+							<td id="three-s" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="four-s" class="score-info">4-s</td>
+							<td id="four-s" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="five-s" class="score-info">5-s</td>
+							<td id="five-s" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="six-s" class="score-info">6-s</td>
+							<td id="six-s" class="score-field"> </td>
+
+							<td id="sum">Sum:</td>
+							<td id="sum" class="score-field"></td>
+
+							<td id="bonus">Bonus:</td>
+							<td id="bonus" class="score-field"></td>
+						</tr>
+						<tr>
+							<td id="one-pair" class="score-info">One pair</td>
+							<td id="one-pair" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="two-pair" class="score-info">Two pairs</td>
+							<td id="two-pair" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="three-same" class="score-info">
+								Three same
+							</td>
+							<td id="three-same" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="four-same" class="score-info">Four same</td>
+							<td id="four-same" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="full-house" class="score-info">
+								Full house
+							</td>
+							<td id="full-house" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="small-straight" class="score-info">
+								Small straight
+							</td>
+							<td id="small-straight" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="large-straight" class="score-info">
+								Large straight
+							</td>
+							<td id="large-straight" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="chance" class="score-info">Chance</td>
+							<td id="chance" class="score-field"> </td>
+						</tr>
+						<tr>
+							<td id="yatzy" class="score-info">Yatzy</td>
+							<td id="yatzy" class="score-field"> </td>
+
+							<td></td>
+							<td></td>
+
+							<td id="total">Total:</td>
+							<td id="total" class="score-field"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<script src="/static/js/index.js" type="module"></script>
+	</body>
+</html>

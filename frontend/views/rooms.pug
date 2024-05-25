@@ -1,0 +1,383 @@
+doctype html
+html(lang="en")
+    head
+        title Yatzy - Rummene
+        meta(charset="UTF-8")
+        style.
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 0;
+                background-color: #f0f0f0;
+            }
+            .login-container {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                width: 90%;
+                max-width: 300px;
+                text-align: center;
+                box-sizing: border-box;
+                margin-top: 20px;
+            }
+            .login-container h1 {
+                margin-bottom: 20px;
+                font-size: 24px;
+            }
+            .login-container input {
+                width: calc(100% - 22px);
+                padding: 10px;
+                margin: 10px 0;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+            .login-container button {
+                padding: 10px;
+                margin-top: 10px;
+            }
+            .toggle-button {
+                background: none;
+                border: none;
+                color: #007bff;
+                cursor: pointer;
+                margin-top: 10px;
+                text-decoration: underline;
+            }
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                margin-top: 20px;
+                width: 80%;
+                padding: 0 20px;
+                box-sizing: border-box;
+            }
+            .room-card {
+                display: grid;
+                grid-column-gap: 15px;
+                grid-row-gap: 15px;
+                align-items: center;
+                grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+                padding: 15px;
+                border-radius: 8px;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            .room-button {
+                border: 1px solid #bacdd8;
+                padding: 8px;
+                border-radius: 12px;
+                margin: 5px;
+                cursor: pointer;
+                width: 100%;
+                box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+                box-sizing: border-box;
+            }
+            .btn-primary {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                padding: 10px;
+            }
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+            .user-info {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                width: 90%;
+                max-width: 300px;
+                text-align: center;
+                box-sizing: border-box;
+                margin-top: 20px;
+            }
+            .player-list-container {
+                position: fixed;
+                top: 50%;
+                right: 20px;
+                transform: translateY(-50%);
+                width: 90%;
+                max-width: 200px;
+                box-sizing: border-box;
+            }
+            @media screen and (max-width: 900px) {
+                .player-list-container {
+                    visibility: hidden;
+                }
+            }
+            .player-list {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                max-height: 400px;
+                overflow-y: auto;
+                overflow-x: hidden;
+                box-sizing: border-box;
+            }
+            .player-list h2 {
+                font-size: 18px;
+                margin-bottom: 10px;
+                text-align: center;
+            }
+            .player-list ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+            .player-list li {
+                margin: 5px 0;
+                cursor: pointer;
+                padding: 10px;
+                border-radius: 4px;
+                transition: background-color 0.3s;
+                display: flex;
+                align-items: center;
+            }
+            .player-list li:hover {
+                background-color: #f0f0f0;
+            }
+            .player-list li:before {
+                content: '👤 ';
+                margin-right: 8px;
+            }
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.6); /* Darken the background */
+                padding-top: 60px;
+            }
+
+            .modal-content {
+                background-color: #fff;
+                margin: 5% auto;
+                padding: 20px;
+                border-radius: 8px;
+                width: 80%;
+                max-width: 500px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow */
+                animation: fadeIn 0.3s ease-in-out; /* Add a fade-in animation */
+                box-sizing: border-box;
+                text-align: center;
+                position: relative; /* Necessary for positioning the close button */
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .close {
+                color: #aaa;
+                position: absolute; /* Position it in the top right corner */
+                top: 10px;
+                right: 20px;
+                font-size: 28px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: color 0.3s; /* Smooth color transition */
+            }
+
+            .close:hover,
+            .close:focus {
+                color: #000;
+                text-decoration: none;
+            }
+
+            .modal-content h2 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .modal-content p {
+                font-size: 16px;
+                line-height: 1.5;
+                margin-bottom: 20px;
+            }
+
+            .modal-content p#playerStats {
+                white-space: pre-wrap; /* Preserve formatting for player stats */
+                font-family: monospace; /* Use a monospaced font for stats */
+                text-align: left; /* Align text to the left */
+                background: #f9f9f9;
+                padding: 10px;
+                border-radius: 4px;
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+    body
+        div.login-container
+        div.user-info
+
+        div.container
+            h1 Se alle vores rum
+            p Her kan du se alle vores rum og deres status.
+            div.room-card
+                each room in rooms
+                    - const roomId = room.id;
+                    - const color = room.status === "WAITING" ? "#f0ad4e" : room.status === "STARTED" ? "#5cb85c" : "#777";
+                    button.room-button(style=`background-color: ${color}`, onclick=`window.location.href='/room/'+${roomId}`)
+                        span= `Rum nr. ${roomId} (${room.players.length}/${room.maxPlayers})`
+                        br
+                        span Status:
+                        span(style="font-weight: bold;")= room.status
+
+        div.player-list-container
+            h2 Spillerliste
+            input(type="text" id="playerSearch" placeholder="Søg efter spiller" oninput="filterPlayers()")
+            div.player-list
+                ul(id="playerList")
+                    each player in players
+                        li(onclick=`showPlayerModal('${player.name}')`)= player.name
+
+        div#playerModal.modal
+            div.modal-content
+                span.close(onclick="closePlayerModal()") &times;
+                h2 Spiller:
+                p#playerName
+                p#playerStats
+
+        script.
+            !{post}
+            !{get}
+            
+            let sessionID = sessionStorage.getItem("sessionID");
+            if (sessionID !== null) {
+                document.querySelector(".login-container").innerHTML = "";
+                document.querySelector(".login-container").style.display = "none";
+                document.querySelector(".user-info").innerHTML = "<h2>Velkommen til Yatzy spillet</h2>";
+                document.querySelector(".user-info").innerHTML += "<p>Her kan du spille Yatzy med dine venner.</p>";
+                document.querySelector(".container").appendChild(document.createElement("button")).outerHTML = `<button class="btn-primary" style="margin-top: 20px;" onclick="createRoom(event)">Opret rum</button>`;
+            } else {
+                document.querySelector(".user-info").innerHTML = "";
+                document.querySelector(".user-info").style.display = "none";
+                document.querySelector(".login-container").innerHTML = `
+                    <h1 id="authTitle">Log ind</h1>
+                    <input id="username" type="text" placeholder="Brugernavn">
+                    <input id="password" type="password" placeholder="Adgangskode">
+                    <button class="btn-primary" id="authButton" onclick="login(event)">Log ind</button>
+                    <button class="toggle-button" onclick="toggleAuth()">Eller opret en ny bruger</button>
+                `;
+            }
+            get("!{apiURL}" + "/user", sessionID === null ? "" : sessionID).then(
+                (values) => {
+                    if (values.success === true) {
+                        const user_info = document.querySelector(".user-info");
+                        user_info.innerHTML = `<h2>Hej, ${values.player.name}!</h2>`;
+                        if (values.room && values.room.status !== "FINISHED") {
+                            user_info.innerHTML += `<p>Du er allerede i <b>rum ${values.room.id}</b> med ${values.room.players.length} spiller(e).</p>`;
+                            user_info.innerHTML += `<button class="btn-primary" onclick="window.location.href='/room/${values.room.id}'">Gå til rummet</button>`;
+                        }
+                    } else {
+                        if (sessionID !== null) {
+                            sessionStorage.removeItem("sessionID");
+                            location.reload();
+                        }
+                    }
+                }
+            );
+
+            async function login(event) {
+                event.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const sID = sessionStorage.getItem("sessionID");
+                const values = await post("!{apiURL}" + "/login", {username: username, password: password}, sID);
+                if (values.sessionID !== undefined) {
+                    sessionStorage.setItem("sessionID", values.sessionID);
+                    location.reload();
+                } else {
+                    alert(values.message);
+                }
+            }
+
+            async function signup(event) {
+                event.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const res = await post("!{apiURL}" + "/signup", {username: username, password: password});
+                if (res.success === true) {
+                    sessionStorage.setItem("sessionID", res.sessionID);
+                    location.reload();
+                } else {
+                    alert(res.message);
+                }
+            }
+
+            async function createRoom(event) {
+                event.preventDefault();
+                const sID = sessionStorage.getItem("sessionID");
+                const values = await post("!{apiURL}" + "/rooms/create", {}, sID);
+                if (values.success === true) {
+                    location.href = location.href.split("/")[0] + "/room/" + values.roomID;
+                } else {
+                    alert(values.message);
+                }
+            }
+
+            async function showPlayerModal(playerName) {
+                const modal = document.getElementById("playerModal");
+                document.getElementById("playerName").innerText = playerName;
+                const res = await get("!{apiURL}" + "/user/stats/" + playerName);
+                modal.style.display = "block";
+                if (res.success === true) {
+                    document.getElementById("playerStats").innerText = `Spillet: ${res.player.played}\nVundet: ${res.player.won}\nTabt: ${res.player.lost}\nHighscore: ${res.player.highScore}\nGennemsnitlig score: ${res.player.averageScore}\nGange fik Yatzy: ${res.player.gotYatzy}`;
+
+                } else {
+                    document.getElementById("playerStats").innerText = res.message;
+                }
+            }
+
+            function closePlayerModal() {
+                const modal = document.getElementById("playerModal");
+                modal.style.display = "none";
+            }
+
+            function filterPlayers() {
+                const searchInput = document.getElementById('playerSearch').value.toLowerCase();
+                const playerList = document.getElementById('playerList');
+                const players = playerList.getElementsByTagName('li');
+                for (let i = 0; players.length > i; i++) {
+                    const player = players[i];
+                    if (player.innerText.toLowerCase().includes(searchInput)) {
+                        player.style.display = '';
+                    } else {
+                        player.style.display = 'none';
+                    }
+                }
+            }
+
+            function toggleAuth() {
+                const authTitle = document.getElementById('authTitle');
+                const authButton = document.getElementById('authButton');
+                const toggleButton = document.querySelector('.toggle-button');
+                if (authButton.getAttribute('onclick') === 'login(event)') {
+                    authTitle.innerText = 'Opret ny bruger';
+                    authButton.innerText = 'Opret bruger';
+                    authButton.setAttribute('onclick', 'signup(event)');
+                    toggleButton.innerText = 'Eller log ind';
+                } else {
+                    authTitle.innerText = 'Log ind';
+                    authButton.innerText = 'Log ind';
+                    authButton.setAttribute('onclick', 'login(event)');
+                    toggleButton.innerText = 'Eller opret en ny bruger';
+                }
+            }

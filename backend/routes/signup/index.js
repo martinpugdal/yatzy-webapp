@@ -37,12 +37,11 @@ router.post("/", (req, res) => {
     // create new player
     const generatedID = randomBytes(20).toString("hex");
     const newPlayer = new Player(username, generatedID);
-    const hashedPassword = Player.hashPassword(password);
-    newPlayer.setPassword(hashedPassword);
+    newPlayer.setPassword(password);
     players.push(newPlayer);
     addDoc(playerCollection, {
         name: username,
-        password: hashedPassword,
+        password: newPlayer.getPassword(),
     });
     res.send({
         message: "Signup successful",
